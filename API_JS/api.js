@@ -3,19 +3,19 @@ let currentDrinks = [];
 let currentPage = 1;
 const drinksPerPage = 6;
 
-// Загрузка напитков (без рецептов)
+// Начальная загрузка
 fetch('https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Cocktail')
   .then(response => response.json())
   .then(data => {
     allDrinks = data.drinks || [];
     currentDrinks = allDrinks;
-    drinks(); //1
+    drinks();
     categoriestype();
     pagination();
   })
   .catch(error => console.error(error));
 
-//1
+// Отображение напитков
 function drinks() {
   const drinksList = document.getElementById('list');
   const start = (currentPage - 1) * drinksPerPage;
@@ -37,11 +37,7 @@ function drinks() {
   });
 }
 
-
-
-// Загрузка и отображение категорий
-//2
-
+// Загрузка категорий
 function categoriestype() {
   const categoriesDiv = document.getElementById('categories');
 
@@ -64,8 +60,6 @@ function categoriestype() {
     .catch(error => console.error(error));
 }
 
-
-
 // Фильтрация по категории (загрузка заново)
 function filterByCategory(category) {
   if (category === 'All') {
@@ -86,17 +80,8 @@ function filterByCategory(category) {
   }
 }
 
-// Случайный напиток
-const randomBtn = document.getElementById('random');
-randomBtn.addEventListener('click', () => {
-  const randomIndex = Math.floor(Math.random() * allDrinks.length);
-  const randomDrink = allDrinks[randomIndex];
-  fetchDrinkDetails(randomDrink.idDrink);
-});
-
-// Поиск по названию
-const searchInput = document.getElementById('search');
-searchInput.addEventListener('input', e => {
+// Поиск
+document.getElementById('search').addEventListener('input', e => {
   const value = e.target.value.toLowerCase();
   currentDrinks = allDrinks.filter(drink =>
     drink.strDrink.toLowerCase().includes(value)
@@ -106,6 +91,12 @@ searchInput.addEventListener('input', e => {
   pagination();
 });
 
+// Случайный напиток (кнопка)
+document.getElementById('random').addEventListener('click', () => {
+  const randomIndex = Math.floor(Math.random() * allDrinks.length);
+  const randomDrink = allDrinks[randomIndex];
+  fetchDrinkDetails(randomDrink.idDrink);
+});
 
 // Пагинация
 function pagination() {
@@ -120,8 +111,64 @@ function pagination() {
     btn.dataset.page = i;
     btn.addEventListener('click', e => {
       currentPage = Number(e.target.dataset.page);
-      displayDrinks();
+      drinks(); 
     });
     pagination.appendChild(btn);
   }
+}
+
+// Подробности напитка
+function fetchDrinkDetails(id) {
+  fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
+    .then(response => response.json())
+    .then(data => {
+      const drink = data.drinks[0];
+      displayDrinkDetails(drink);
+    })
+    .catch(error => console.error(error));
+}
+
+function displayDrinkDetails(drink) {
+  const drinkList = document.getElementById('list');
+
+  const ingredients = [];
+  for (let i = 1; i <= 15; i++) {
+    const ingredient = drink[`strIngredient${i}`];
+    const measure = drink[`strMeasure${i}`];
+    if (ingredient && ingredient.trim() !== '') {
+      ingredients.push({
+        ingredient,
+        measure: measure || ''
+      });
+    }
+  }
+
+  drinkList.innerHTML = `
+    <article class="item">
+      <div class="drink-image">
+        <img src="${drink.strDrinkThumb}" alt="${drink.strDrink}" style="max-height: 400px; max-width: 100%;">
+        <h2>${drink.strDrink}</h2>
+      </div>
+      <div class="drink-details">
+        <h3>Instructions</h3>
+        <p>${drink.strInstructions || "No instructions available."}</p>
+        
+        <div class="ingredients-list">
+          <h3>Ingredients</h3>
+          <ul>
+            ${ingredients.map(item => 
+              `<li>${item.ingredient}${item.measure ? ' - ' + item.measure : ''}</li>`
+            ).join('')}
+          </ul>
+        </div>
+        
+        <button id="backBtn">Back to List</button>
+      </div>
+    </article>
+  `;
+
+  document.getElementById('backBtn').addEventListener('click', () => {
+    drinks();
+    pagination();
+  });
 }
