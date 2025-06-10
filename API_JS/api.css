@@ -4,7 +4,17 @@ body{
     background-color: #f2f2f2;
     margin: 0;
     padding: 20px;
+    color: #333;
 }
+/* buttons design (taken from css base) */
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+    align-items: center;
+  }
+
 button{
       padding: 10px 20px;
       background-color:brown;
@@ -15,7 +25,11 @@ button{
       font-size: 16px;
 }
 
-.controls {
-    text-align: center;
-    margin-bottom: 20px;
-}
+#search {
+    padding: 10px 15px;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    font-size: 16px;
+    flex-grow: 1;
+    max-width: 500px;
+  }

@@ -95,7 +95,6 @@ randomBtn.addEventListener('click', () => {
   fetchDrinkDetails(randomDrink.idDrink);
 });
 
-
 // Поиск по названию
 const searchInput = document.getElementById('search');
 searchInput.addEventListener('input', e => {
@@ -103,6 +102,7 @@ searchInput.addEventListener('input', e => {
   currentDrinks = allDrinks.filter(drink =>
     drink.strDrink.toLowerCase().includes(value)
   );
-  currentPage = 0;
+  currentPage = 1;
+  drinks();
   pagination();
 });
