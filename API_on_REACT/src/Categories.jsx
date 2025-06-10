@@ -1,17 +1,26 @@
-import useFetch from './Hook.jsx';
+import { useEffect, useState } from 'react';
 
 export default function Categories({ onSelectCategory }) {
-  const { data, loading, error } = useFetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list');
+  const [categories, setCategories] = useState([]);
 
-  if (loading) return <p>Загрузка категорий...</p>;
-  if (error) return <p>Ошибка загрузки: {error.message}</p>;
-
-  const categories = ['All', ...(data?.drinks?.map(cat => cat.strCategory) || [])];
+  useEffect(() => {
+    fetch(`https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list`)
+      .then(res => res.json())
+      .then(data => {
+        const cats = data.drinks.map(d => d.strCategory);
+        setCategories(['All', ...cats]);
+      })
+      .catch(console.error);
+  }, []);
 
   return (
-    <div>
+    <div id="categories">
       {categories.map(category => (
-        <button key={category} onClick={() => onSelectCategory(category)}>
+        <button
+          key={category}
+          className="category-btn"
+          onClick={() => onSelectCategory(category)}
+        >
           {category}
         </button>
       ))}
