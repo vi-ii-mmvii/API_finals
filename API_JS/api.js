@@ -4,17 +4,16 @@ let currentPage = 1;
 const drinksPerPage = 6;
 
 // Загрузка напитков (без рецептов)
-
-
 fetch('https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Cocktail')
   .then(response => response.json())
   .then(data => {
     allDrinks = data.drinks || [];
     currentDrinks = allDrinks;
+    drinks(); //1
+    categoriestype();
+    pagination();
   })
   .catch(error => console.error(error));
-
-
 
 //1
 function drinks() {

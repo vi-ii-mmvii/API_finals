@@ -10,21 +10,25 @@ body{
 .controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 25px;
     margin-bottom: 30px;
     align-items: center;
   }
 
-button{
-      padding: 10px 20px;
-      background-color:brown;
-      color: white;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 16px;
-}
+  button {
+    padding: 10px 20px;
+    background-color: #7f6e19;
+    color: white;
+    border: none;
+    border-radius: 17.5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
 
+  button:hover {
+    background-color: #7c9636;
+  }
 #search {
     padding: 10px 15px;
     border: 2px solid #ccc;
