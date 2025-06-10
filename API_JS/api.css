@@ -37,3 +37,36 @@ body{
     flex-grow: 1;
     max-width: 500px;
   }
+
+  #categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .category-btn {
+    padding: 8px 15px;
+    background-color: #927e1d;
+  }
+
+  .category-btn:hover {
+    background-color: #8aa63b;
+  }
+
+  #list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 20px;
+    margin-bottom: 30px;
+    min-height: 500px; /* Ensure consistent height for empty rows */
+  }
+
+  .item {
+    background: white;
+    border-radius: 7.5px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+  }

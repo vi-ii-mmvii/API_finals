@@ -105,3 +105,23 @@ searchInput.addEventListener('input', e => {
   drinks();
   pagination();
 });
+
+
+// Пагинация
+function pagination() {
+  const pagination = document.getElementById('pagination');
+  const pages = Math.ceil(currentDrinks.length / drinksPerPage);
+
+  pagination.innerHTML = '';
+  for (let i = 1; i <= pages; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'page-btn';
+    btn.textContent = i;
+    btn.dataset.page = i;
+    btn.addEventListener('click', e => {
+      currentPage = Number(e.target.dataset.page);
+      displayDrinks();
+    });
+    pagination.appendChild(btn);
+  }
+}
