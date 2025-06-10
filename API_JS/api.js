@@ -86,3 +86,11 @@ function filterByCategory(category) {
       .catch(error => console.error(error));
   }
 }
+
+// Случайный напиток
+const randomBtn = document.getElementById('random');
+randomBtn.addEventListener('click', () => {
+  const randomIndex = Math.floor(Math.random() * allDrinks.length);
+  const randomDrink = allDrinks[randomIndex];
+  fetchDrinkDetails(randomDrink.idDrink);
+});
