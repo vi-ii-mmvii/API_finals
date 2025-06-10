@@ -94,3 +94,15 @@ randomBtn.addEventListener('click', () => {
   const randomDrink = allDrinks[randomIndex];
   fetchDrinkDetails(randomDrink.idDrink);
 });
+
+
+// Поиск по названию
+const searchInput = document.getElementById('search');
+searchInput.addEventListener('input', e => {
+  const value = e.target.value.toLowerCase();
+  currentDrinks = allDrinks.filter(drink =>
+    drink.strDrink.toLowerCase().includes(value)
+  );
+  currentPage = 0;
+  pagination();
+});
