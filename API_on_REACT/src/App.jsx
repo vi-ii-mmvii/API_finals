@@ -54,7 +54,7 @@ export default function App() {
     setCurrentPage(1);
   };
 
-  // Функция для получения деталей напитка по id
+  // Загружаем подробности напитка и сохраняем в состояние
   const handleDrinkClick = (id) => {
     fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
       .then(res => res.json())
@@ -74,6 +74,19 @@ export default function App() {
   if (loading) return <p>Загрузка...</p>;
   if (error) return <p>Ошибка: {error.message}</p>;
 
+//подробности напиткой
+  const getIngredientsList = (drink) => {
+    const ingredients = [];
+    for (let i = 1; i <= 15; i++) {
+      const ingredient = drink[`strIngredient${i}`];
+      const measure = drink[`strMeasure${i}`];
+      if (ingredient && ingredient.trim() !== '') {
+        ingredients.push(`${ingredient}${measure ? ` — ${measure.trim()}` : ''}`);
+      }
+    }
+    return ingredients;
+  };
+
   return (
     <div>
       <h1>Коктейли</h1>
@@ -84,9 +97,19 @@ export default function App() {
           <img
             src={selectedDrink.strDrinkThumb}
             alt={selectedDrink.strDrink}
+            style={{ maxWidth: '300px' }}
           />
+          <h3>Ингредиенты:</h3>
+          <ul>
+            {getIngredientsList(selectedDrink).map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+          <h3>Инструкция:</h3>
           <p>{selectedDrink.strInstructions || 'Инструкция отсутствует.'}</p>
-          <button onClick={handleBack}>Назад</button>
+          <button onClick={handleBack} style={{ padding: '6px 12px', marginTop: 10 }}>
+            Назад
+          </button>
         </div>
       ) : (
         <>
@@ -94,11 +117,12 @@ export default function App() {
           <Random allDrinks={allDrinks} onSelectRandom={handleDrinkClick} />
           <Categories onSelectCategory={handleCategoryFilter} />
           <DrinkList drinks={drinksToShow} onSelect={handleDrinkClick} />
-          <div>
+          <div style={{ marginTop: 20 }}>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
+                style={{ marginRight: 5 }}
               >
                 {page}
               </button>
