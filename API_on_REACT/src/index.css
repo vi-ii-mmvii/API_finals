@@ -6,6 +6,20 @@ body{
   padding: 20px;
   color: #333;
 }
+
+
+#search {
+  width: 400px;
+  padding: 10px 75px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+#search:focus {
+  border-color: #7c9636; 
+}
 /* buttons design (taken from css base) */
 .controls {
   display: flex;
