@@ -3,7 +3,7 @@ export default function Search({ onSearch }) {
       <div>
         <input
           type="text"
-          placeholder="Поиск коктейлей..."
+          placeholder="Прошу, к вашим услугам, поисковичок"
           onChange={(e) => onSearch(e.target.value)}
         />
       </div>

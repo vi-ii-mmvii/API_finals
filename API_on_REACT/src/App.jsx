@@ -3,6 +3,7 @@ import useFetch from './Hook.jsx';
 import Categories from './Categories.jsx';
 import Search from './Search.jsx';
 import DrinkList from './DrinkList.jsx';
+import Random from './Random.jsx';
 
 const drinksPerPage = 6;
 
@@ -10,16 +11,13 @@ export default function App() {
   const [currentUrl, setCurrentUrl] = useState(
     'https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Cocktail'
   );
-  const { data, loading, error, refetch } = useFetch(currentUrl);
+  const { data, loading, error } = useFetch(currentUrl);
 
-  // полный список напитков (для поиска)
   const [allDrinks, setAllDrinks] = useState([]);
-  // напитки для показа (пагинация, фильтры)
   const [currentDrinks, setCurrentDrinks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedDrink, setSelectedDrink] = useState(null);
 
-  // При изменении data обновляем списки
   useEffect(() => {
     if (data?.drinks) {
       setAllDrinks(data.drinks);
@@ -28,7 +26,6 @@ export default function App() {
     }
   }, [data]);
 
-  // Функция для обработки выбора категории
   const handleCategoryFilter = category => {
     if (category === 'All') {
       setCurrentUrl(
@@ -44,7 +41,6 @@ export default function App() {
     setSelectedDrink(null);
   };
 
-  // Поиск по текущему списку напитков
   const handleSearch = query => {
     if (!query.trim()) {
       setCurrentDrinks(allDrinks);
@@ -58,16 +54,28 @@ export default function App() {
     setCurrentPage(1);
   };
 
-  // Функция для возврата назад из деталей напитка
+  // Функция для получения деталей напитка по id
+  const handleDrinkClick = (id) => {
+    fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
+      .then(res => res.json())
+      .then(data => setSelectedDrink(data.drinks[0]))
+      .catch(console.error);
+  };
+
   const handleBack = () => {
     setSelectedDrink(null);
   };
+
+  const totalPages = Math.ceil(currentDrinks.length / drinksPerPage);
+  const start = (currentPage - 1) * drinksPerPage;
+  const end = start + drinksPerPage;
+  const drinksToShow = currentDrinks.slice(start, end);
 
   if (loading) return <p>Загрузка...</p>;
   if (error) return <p>Ошибка: {error.message}</p>;
 
   return (
-    <div style={{ padding: 20 }}>
+    <div>
       <h1>Коктейли</h1>
 
       {selectedDrink ? (
@@ -78,15 +86,14 @@ export default function App() {
             alt={selectedDrink.strDrink}
           />
           <p>{selectedDrink.strInstructions || 'Инструкция отсутствует.'}</p>
-          <button>
-            Назад
-          </button>
+          <button onClick={handleBack}>Назад</button>
         </div>
       ) : (
         <>
           <Search onSearch={handleSearch} />
+          <Random allDrinks={allDrinks} onSelectRandom={handleDrinkClick} />
           <Categories onSelectCategory={handleCategoryFilter} />
-          <DrinkList drinks={drinksToShow} />
+          <DrinkList drinks={drinksToShow} onSelect={handleDrinkClick} />
           <div>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
               <button
